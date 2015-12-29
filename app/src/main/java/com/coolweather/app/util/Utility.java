@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.coolweather.app.db.CoolWeatherDB;
 import com.coolweather.app.model.City;
 import com.coolweather.app.model.County;
 import com.coolweather.app.model.Province;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -90,7 +88,6 @@ public class Utility {
      */
     public static void handleWeatherResponse(Context context,String response){
         try {
-            Log.e("1222","112211");
             JSONObject jsonArray = new JSONObject(response);
             JSONObject weatherInfo = jsonArray.getJSONObject("weatherinfo");
             String cityName = weatherInfo.getString("city");
@@ -113,7 +110,7 @@ public class Utility {
                                             String weatherCode,String temp1,
                                             String temp2,String weatherDesp,
                                             String publishTime){
-        Log.e("1111","1111");
+        LogUtil.i("Utility","运行savaWeatherResponses");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日", Locale.CHINA);
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putBoolean("city_selected", true);

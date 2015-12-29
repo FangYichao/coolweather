@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -54,13 +53,19 @@ public class ChooseAreaActivity extends Activity {
      */
     private Province selectedProvince;
     private City selectedCity;
+    /**
+     * 判断是否是从WeatherActivity中跳转过来的
+     */
+    private boolean isFromWeatherActivity;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity",false);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.getBoolean("city_selected",false)){
+        //已经选择了城市并且不是从WeatherActivity跳转过来的才会直接到WeatherActivity
+        if (preferences.getBoolean("city_selected",false) && !isFromWeatherActivity){
             Intent intent = new Intent(ChooseAreaActivity.this,WeatherActyvity.class);
             startActivity(intent);
             finish();
@@ -156,7 +161,6 @@ public class ChooseAreaActivity extends Activity {
      */
     private void queryFromServer(final String code,final String type){
         String address;
-        Log.d("1","1");
         if (!TextUtils.isEmpty(code)){
             address = "http://www.weather.com.cn/data/list3/city"+code+".xml";
         }else {
@@ -197,6 +201,7 @@ public class ChooseAreaActivity extends Activity {
                 Toast.makeText(ChooseAreaActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
             }
         });
+        closeProgressDialog();
 
     }
     private void showProgressDialog(){
@@ -224,6 +229,10 @@ public class ChooseAreaActivity extends Activity {
         }else if (currentLevel ==LEVEL_CITY){
             queryProvinces();
         }else {
+            if (isFromWeatherActivity){
+                Intent intent = new Intent(ChooseAreaActivity.this,WeatherActyvity.class);
+                startActivity(intent);
+            }
             finish();
         }
     }
